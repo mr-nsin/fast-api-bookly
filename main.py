@@ -8,8 +8,9 @@ app = FastAPI()
 async def read_root():
     return {"message": "Hello World"}
 
-@app.get('/greet/{name}')
-async def greet_name(name: str):
+# Query Parameters Example
+@app.get('/greet')
+async def greet_name(name: str, age: int) -> dict:
     return {"message": f"Hello {name}"}
 
 if __name__ == '__main__':
