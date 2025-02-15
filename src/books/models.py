@@ -1,4 +1,4 @@
-from sqlalchemy import Column, UUID, String, TIMESTAMP, Integer, DATETIME
+from sqlalchemy import Column, UUID, String, Integer, DateTime
 import sqlalchemy.dialects.sqlite as sLit
 from src.db.main import Base
 from datetime import datetime
@@ -12,11 +12,11 @@ class Book(Base):
     title: str = Column(String, nullable=False)
     author: str = Column(String, nullable=False)
     publisher: str = Column(String, nullable=False)
-    published_date: datetime = Column(DATETIME, nullable=False)
+    published_date: datetime = Column(DateTime, nullable=False)
     page_count: int = Column(Integer, nullable=False)
     language: str = Column(String, nullable=False)
-    created_at: datetime = Column(TIMESTAMP, nullable=False, default=datetime.now)
-    updated_at: datetime = Column(TIMESTAMP, nullable=False, default=datetime.now)
+    created_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
+    updated_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
 
     def __repr__(self):
         return f"<Book {self.title}>"

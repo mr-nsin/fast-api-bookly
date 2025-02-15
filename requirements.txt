@@ -1,9 +1,5 @@
 fastapi
 uvicorn
-<<<<<<< HEAD
-=======
-asyncpg
+sqlalchemy
 pydantic-settings
-sqlmodel
 aiosqlite
->>>>>>> 8b4138dcde94296f3a9e2077d90d689119e9feaa
