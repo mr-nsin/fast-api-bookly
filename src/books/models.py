@@ -19,4 +19,4 @@ class Book(Base):
     updated_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
 
     def __repr__(self):
-        return f"<Book {self.title}>"
+        return f"<Book {self.title}, {self.author}, {self.publisher}, {self.published_date}, {self.page_count}, {self.language}>"
