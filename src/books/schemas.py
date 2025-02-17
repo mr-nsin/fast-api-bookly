@@ -13,6 +13,9 @@ class Book(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+    class Config:
+        orm_mode = True
+    
 
 class BookCreateModel(BaseModel):
     title: str
