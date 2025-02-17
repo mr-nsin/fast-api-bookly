@@ -28,7 +28,8 @@ class BookService:
     
     async def update_book(self, book_uid: str, update_data: BookUpdateModel, session: AsyncSession):
         book_to_update = await self.get_book(book_uid, session)
-        print(f"book to update {book_to_update}")
+        if book_to_update is None:
+            return book_to_update
         update_data_dict = update_data.model_dump()
         for k, v in update_data_dict.items():
             setattr(book_to_update, k, v)
@@ -36,9 +37,9 @@ class BookService:
         return book_to_update
     
     async def delete_book(self, book_uid: str, session: AsyncSession):
-        book_to_delete = self.get_book(book_uid, session)
+        book_to_delete = await self.get_book(book_uid, session)
         if book_to_delete is not None:
             await session.delete(book_to_delete)
             await session.commit()
-        else:
-            return None
+
+            return {}
