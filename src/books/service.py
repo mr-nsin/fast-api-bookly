@@ -27,9 +27,10 @@ class BookService:
         return new_book    
     
     async def update_book(self, book_uid: str, update_data: BookUpdateModel, session: AsyncSession):
-        book_to_update = self.get_book(book_uid, session)
+        book_to_update = await self.get_book(book_uid, session)
+        print(f"book to update {book_to_update}")
         update_data_dict = update_data.model_dump()
-        for k, v in update_data.items():
+        for k, v in update_data_dict.items():
             setattr(book_to_update, k, v)
         await session.commit()
         return book_to_update

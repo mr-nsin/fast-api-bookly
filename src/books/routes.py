@@ -30,7 +30,7 @@ async def create_a_book(book_data: BookCreateModel, session: AsyncSession = Depe
     return new_book
 
 
-@book_router.patch('/{book_uid}')
+@book_router.patch('/{book_uid}', response_model=Book)
 async def update_book(book_uid: str, book_update_data: BookUpdateModel, session: AsyncSession = Depends(get_session)) -> dict:
     updated_book = await book_service.update_book(book_uid, book_update_data, session)
 
