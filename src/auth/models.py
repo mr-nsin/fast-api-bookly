@@ -1,4 +1,4 @@
-from sqlalchemy import Column, UUID, String, Integer, DateTime, Boolean
+from sqlalchemy import Column, UUID, String, DateTime, Boolean
 from datetime import datetime
 from src.db.main import Base
 import uuid
@@ -11,6 +11,7 @@ class User(Base):
     first_name: str = Column(String, nullable=False)
     last_name: str = Column(String, nullable=False)
     is_verified: bool = Column(Boolean, nullable=False, default=False)
+    password_hash: str = Column(String, nullable=False)
     created_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
     updated_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
 
