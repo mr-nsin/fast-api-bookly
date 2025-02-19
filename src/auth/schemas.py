@@ -3,9 +3,11 @@ import uuid
 from datetime import datetime
 
 class UserCreateModel(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50)
-    email: str = Field(..., min_length=3, max_length=320)
-    password: str = Field(..., min_length=8, max_length=100)
+    first_name: str = Field(max_length=25)
+    last_name: str = Field(max_length=25)
+    username: str = Field(max_length=8)
+    email: str = Field(max_length=40)
+    password: str = Field(min_length=6)
     
 
 class UserModel(BaseModel):
@@ -15,8 +17,9 @@ class UserModel(BaseModel):
     first_name: str
     last_name: str
     is_verified: bool
+    password_hash: str = Field(exclude=True)
     created_at: datetime
-    updated_at: datetime
+    update_at: datetime
 
     class Config:
         orm_mode = True

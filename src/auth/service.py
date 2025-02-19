@@ -6,7 +6,7 @@ from src.auth.schemas import UserCreateModel
 from src.auth.models import User
 
 class UserService:
-    async def get_user(
+    async def get_user_by_email(
             self,
             email:str,
             session: AsyncSession
@@ -22,7 +22,7 @@ class UserService:
             email,
             session: AsyncSession
         ):
-        user = await self.get_user(email, session)
+        user = await self.get_user_by_email(email, session)
         return True if user is not None else False
     
 
