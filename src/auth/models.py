@@ -11,7 +11,7 @@ class User(Base):
     first_name: str = Column(String, nullable=False)
     last_name: str = Column(String, nullable=False)
     is_verified: bool = Column(Boolean, nullable=False, default=False)
-    password_hash: str = Column(String, nullable=False)
+    password: str = Column(String, nullable=False)
     created_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
     updated_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
 
