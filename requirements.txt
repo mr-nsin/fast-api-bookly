@@ -6,3 +6,4 @@ aiosqlite
 alembic
 passlib
 bcrypt
+pyjwt
