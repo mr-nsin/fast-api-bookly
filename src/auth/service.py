@@ -35,7 +35,7 @@ class UserService:
 
         new_user = User(**user_data_dict)
     
-        new_user.password_hash = gen_pass_hash(user_data_dict['password'])
+        new_user.password = gen_pass_hash(user_data_dict['password'])
 
         session.add(new_user)
         await session.commit()
