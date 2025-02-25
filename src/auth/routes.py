@@ -3,15 +3,10 @@ from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel
 from src.auth.service import UserService
 from src.db.main import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.auth.utils import create_access_token, decode_token, verify_pass
+from src.auth.utils import create_access_token, verify_pass
 from fastapi.responses import JSONResponse
-<<<<<<< HEAD
-
-from datetime import timedelta
-=======
 from datetime import timedelta, datetime
 from src.auth.dependencies import RefreshTokenBearer
->>>>>>> d77c115680068b490a20fb74fc3bfac022d5e85e
 
 auth_router = APIRouter()
 user_service = UserService()
@@ -75,7 +70,7 @@ async def get_new_access_token(
     expiry_timestamp = token_details['exp']
 
     if datetime.fromtimestamp(expiry_timestamp) > datetime.now():
-        new_access_token = create_accesstoken(
+        new_access_token = create_access_token(
             user_data = token_details['user']
         )
 
