@@ -3,7 +3,7 @@ from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel
 from src.auth.service import UserService
 from src.db.main import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
-from utils import create_access_token, decode_token, verify_pass
+from src.auth.utils import create_access_token, decode_token, verify_pass
 from fastapi.responses import JSONResponse
 
 from datetime import timedelta
@@ -43,14 +43,16 @@ async def login_users(
     ):    
     email = login_user.email
     password = login_user.password
-
+    
     user = await user_service.get_user_by_email(email, session)
+    print(password)
+    print(user.password)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User with email {email} not found"
         )
-    elif not verify_pass(password, user.password_hash):
+    elif not verify_pass(password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid password"
