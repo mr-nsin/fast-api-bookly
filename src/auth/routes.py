@@ -5,6 +5,7 @@ from src.db.main import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils import create_access_token, decode_token, verify_pass
 from fastapi.responses import JSONResponse
+
 from datetime import timedelta
 
 auth_router = APIRouter()
