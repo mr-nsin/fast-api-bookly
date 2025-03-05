@@ -4,15 +4,17 @@ from src.books.schemas import Book, BookUpdateModel, BookCreateModel
 from src.books.service import BookService
 from src.db.main import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.auth.dependencies import AccessTokenBearer
+from src.auth.dependencies import AccessTokenBearer, RoleChecker
 
 book_router = APIRouter()
 book_service = BookService()
 access_token_bearer = AccessTokenBearer() 
+role_checker = Depends(RoleChecker(['admin', 'user']))
 
 @book_router.get(
         '/{book_uid}',
-        response_model=Book
+        response_model=Book,
+        dependencies=[role_checker]
     )
 async def get_book(
         book_uid: str,
@@ -29,7 +31,8 @@ async def get_book(
 @book_router.get(
         "/",
         response_model=List[Book],
-        status_code=status.HTTP_200_OK
+        status_code=status.HTTP_200_OK,
+        dependencies=[role_checker]
     )
 async def get_all_books(
         session: AsyncSession = Depends(get_session),
@@ -42,7 +45,8 @@ async def get_all_books(
 @book_router.post(
         '/',
         response_model=Book,
-        status_code=status.HTTP_201_CREATED
+        status_code=status.HTTP_201_CREATED,
+        dependencies=[role_checker]
     )
 async def create_a_book(
         book_data: BookCreateModel, 
@@ -55,7 +59,8 @@ async def create_a_book(
 
 @book_router.patch(
         '/{book_uid}', 
-        response_model=Book
+        response_model=Book,
+        dependencies=[role_checker]
     )
 async def update_book(
         book_uid: str, 
@@ -72,7 +77,8 @@ async def update_book(
 
 
 @book_router.delete(
-        '/{book_uid}'
+        '/{book_uid}',
+        dependencies=[role_checker]
     )
 async def delete_book(
         book_uid: str, 

@@ -6,6 +6,8 @@ from src.auth.utils import decode_token
 from src.db.redis import token_in_blocklist
 from src.db.main import get_session
 from src.auth.service import UserService
+from typing import List, Any
+from src.auth.models import User
 
 user_service = UserService()
 
@@ -76,3 +78,46 @@ async def get_current_user(
     user_email = token_details['email']
     user = await user_service.get_user_by_email(user_email, session)
     return user
+
+
+class RoleChecker:
+    """
+    A dependency class for FastAPI to check if the current user has one of the allowed roles.
+    Attributes:
+        allowed_roles (List[str]): A list of roles that are allowed to access the endpoint.
+    Methods:
+        __init__(allowed_roles: List[str]):
+            Initializes the RoleChecker with the allowed roles.
+        __call__(user: User = Depends(get_current_user)) -> Any:
+            Checks if the current user's role is in the list of allowed roles.
+            Raises an HTTPException with status code 403 if the user does not have permission.
+    """
+
+    def __init__(self, allowed_roles: List[str]):
+        """
+        Initialize the dependency with a list of allowed roles.
+
+        Args:
+            allowed_roles (List[str]): A list of roles that are allowed to access certain resources.
+        """
+        self.allowed_roles = allowed_roles
+
+    async def __call__(self, user : User = Depends(get_current_user)) -> Any:
+        """
+        Checks if the current user has the required role to perform an action.
+
+        Args:
+            user (User): The current user, obtained from the dependency injection.
+
+        Raises:
+            HTTPException: If the user's role is not in the allowed roles, a 403 Forbidden error is raised.
+
+        Returns:
+            Any: Returns True if the user has the required role.
+        """
+        if user.role not in self.allowed_roles:
+            raise HTTPException(
+                status_code = status.HTTP_403_FORBIDDEN,
+                detail = 'You do not have permission to perform this action'
+            )
+        return True

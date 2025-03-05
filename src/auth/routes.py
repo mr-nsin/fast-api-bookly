@@ -6,11 +6,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.auth.utils import create_access_token, verify_pass
 from fastapi.responses import JSONResponse
 from datetime import timedelta, datetime
-from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user
+from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user, RoleChecker
 from src.db.redis import add_jti_to_blocklist
 
 auth_router = APIRouter()
 user_service = UserService()
+role_checker = RoleChecker(['admin', 'user'])
 
 REFRESH_TOKEN_EXPIRY = 2
 
@@ -58,7 +59,7 @@ async def login_users(
         )
     else:
         access_token = create_access_token(user_data = {'email': user.email, 
-                                                        'user_uid': str(user.uid)}, expiry=None)
+                                                        'user_uid': str(user.uid), 'role': user.role}, expiry=None)
         refresh_token = create_access_token(user_data = {'email': user.email, 
                                                         'user_uid': str(user.uid)}, expiry=timedelta(days=REFRESH_TOKEN_EXPIRY), refresh=True)
         return JSONResponse(content={'message': 'Login successful', 'access_token': access_token, 'refresh_token': refresh_token, 'user': {'email': user.email, 'uid': str(user.uid)}})
@@ -84,7 +85,8 @@ async def get_new_access_token(
 
 @auth_router.get('/me')
 async def get_current_user(
-        user = Depends(get_current_user)
+        user = Depends(get_current_user),
+        _: bool = Depends(role_checker)
     ):
     return user
 
@@ -95,6 +97,6 @@ async def revoke_token(
     token_jti = token_details['jti']
     await add_jti_to_blocklist(token_jti)
     return JSONResponse(content = {
-        'message': 'Logout successfully',
+        'message': 'Logout successfully'},
         status_code = status.HTTP_200_OK
-    })
+    )

@@ -10,6 +10,7 @@ class User(Base):
     email: str = Column(String, nullable=False)
     first_name: str = Column(String, nullable=False)
     last_name: str = Column(String, nullable=False)
+    role: str = Column(String, nullable=False, default='user')
     is_verified: bool = Column(Boolean, nullable=False, default=False)
     password: str = Column(String, nullable=False)
     created_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
