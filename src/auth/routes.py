@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.auth.utils import create_access_token, verify_pass
 from fastapi.responses import JSONResponse
 from datetime import timedelta, datetime
-from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer
+from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user
 from src.db.redis import add_jti_to_blocklist
 
 auth_router = APIRouter()
@@ -81,6 +81,12 @@ async def get_new_access_token(
 
     raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = 'Invalid or expired token')
 
+
+@auth_router.get('/me')
+async def get_current_user(
+        user = Depends(get_current_user)
+    ):
+    return user
 
 @auth_router.get('/logout')
 async def revoke_token(
