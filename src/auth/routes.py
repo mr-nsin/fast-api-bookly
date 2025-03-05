@@ -6,7 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.auth.utils import create_access_token, verify_pass
 from fastapi.responses import JSONResponse
 from datetime import timedelta, datetime
-from src.auth.dependencies import RefreshTokenBearer
+from src.auth.dependencies import RefreshTokenBearer, AccessTokenBearer
+from src.db.redis import add_jti_to_blocklist
 
 auth_router = APIRouter()
 user_service = UserService()
@@ -79,3 +80,14 @@ async def get_new_access_token(
         })
 
     raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = 'Invalid or expired token')
+
+
+@auth_router.get('/logout')
+async def revoke_token(
+        token_details: dict = Depends(AccessTokenBearer())
+    ):
+    token_jti = token_details['jti']
+    await add_jti_to_blocklist(token_jti)
+    return JSONResponse(content = {
+        'message': 'Logout successfully'
+    })
