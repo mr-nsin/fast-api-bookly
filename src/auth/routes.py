@@ -89,5 +89,6 @@ async def revoke_token(
     token_jti = token_details['jti']
     await add_jti_to_blocklist(token_jti)
     return JSONResponse(content = {
-        'message': 'Logout successfully'
+        'message': 'Logout successfully',
+        status_code = status.HTTP_200_OK
     })
