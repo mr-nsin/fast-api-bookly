@@ -1,8 +1,9 @@
-from sqlalchemy import Column, UUID, String, Integer, DateTime
+from sqlalchemy import Column, UUID, String, Integer, DateTime, ForeignKey
 import sqlalchemy.dialects.sqlite as sLit
 from src.db.main import Base
 from datetime import datetime
 import uuid
+from typing import Optional
 
 
 class Book(Base):
@@ -15,6 +16,7 @@ class Book(Base):
     published_date: datetime = Column(DateTime, nullable=False)
     page_count: int = Column(Integer, nullable=False)
     language: str = Column(String, nullable=False)
+    user_uid: Optional[uuid.UUID] = Column(UUID(as_uuid=True), ForeignKey('users.uid'), nullable=True, default=None)
     created_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
     updated_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
 
