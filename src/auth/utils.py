@@ -15,12 +15,13 @@ def verify_pass(plain_password: str, hashed_password: str) -> bool:
     return pwd_cxt.verify(plain_password, hashed_password)    
 
 def create_access_token(user_data: dict, expiry: timedelta = None, refresh: bool = False) -> str:
-    to_encode = user_data.copy()
+    payload = {}
+    payload['user'] = user_data.copy()
     expire = datetime.utcnow() + (expiry if expiry is not None else timedelta(seconds=ACCESS_TOKEN_EXPIRY))
-    to_encode.update({"exp": expire})
-    to_encode.update({"jti": str(uuid.uuid4())})
-    to_encode.update({"refresh": refresh})
-    return jwt.encode(to_encode, Config.JWT_SECRET, algorithm=Config.JWT_ALGORITHM)
+    payload.update({"exp": expire})
+    payload.update({"jti": str(uuid.uuid4())})
+    payload.update({"refresh": refresh})
+    return jwt.encode(payload, Config.JWT_SECRET, algorithm=Config.JWT_ALGORITHM)
 
 def decode_token(token: str) -> dict:
     try:
