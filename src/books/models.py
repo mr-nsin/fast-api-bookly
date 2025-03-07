@@ -1,9 +1,10 @@
 from sqlalchemy import Column, UUID, String, Integer, DateTime, ForeignKey
-import sqlalchemy.dialects.sqlite as sLit
+from sqlalchemy.orm import relationship, Mapped
 from src.db.main import Base
 from datetime import datetime
-import uuid
 from typing import Optional
+from src.auth import models
+import uuid
 
 
 class Book(Base):
@@ -19,6 +20,7 @@ class Book(Base):
     user_uid: Optional[uuid.UUID] = Column(UUID(as_uuid=True), ForeignKey('users.uid'), nullable=True, default=None)
     created_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
     updated_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
+    user: Mapped[Optional['models.User']] = relationship('User', back_populates='books')
 
     def __repr__(self):
         return f"<Book {self.title}, {self.author}, {self.publisher}, {self.published_date}, {self.page_count}, {self.language}>"

@@ -1,7 +1,10 @@
 from sqlalchemy import Column, UUID, String, DateTime, Boolean
+from sqlalchemy.orm import relationship, Mapped
 from datetime import datetime
 from src.db.main import Base
 import uuid
+from typing import List
+from src.books import models
 
 class User(Base):
     __tablename__ = "users"
@@ -15,6 +18,7 @@ class User(Base):
     password: str = Column(String, nullable=False)
     created_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
     updated_at: datetime = Column(DateTime, nullable=False, default=datetime.now)
+    books: Mapped[List['models.Book']] = relationship('Book', back_populates='user', lazy='selectin')
 
     def __repr__(self):
         return f'<User {self.username}, {self.email}, {self.first_name}, {self.last_name}, {self.is_verified}>'

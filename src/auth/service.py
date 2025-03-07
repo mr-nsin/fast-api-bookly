@@ -1,8 +1,8 @@
 from src.auth.models import User
-from src.auth.utils import gen_pass_hash, verify_pass
+from src.auth.utils import gen_pass_hash
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from src.auth.schemas import UserCreateModel
+from src.auth.schemas import UserRequestModel
 from src.auth.models import User
 
 class UserService:
@@ -28,7 +28,7 @@ class UserService:
 
     async def create_user(
             self,
-            user_data: UserCreateModel,
+            user_data: UserRequestModel,
             session: AsyncSession
         ):
         user_data_dict = user_data.model_dump()
@@ -36,6 +36,7 @@ class UserService:
         new_user = User(**user_data_dict)
     
         new_user.password = gen_pass_hash(user_data_dict['password'])
+        new_user.role = 'user'
 
         session.add(new_user)
         await session.commit()

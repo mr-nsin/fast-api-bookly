@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status, HTTPException
-from src.auth.schemas import UserCreateModel, UserModel, UserLoginModel
+from src.auth.schemas import UserRequestModel, UserResponseModel, UserModel, UserLoginModel
 from src.auth.service import UserService
 from src.db.main import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,11 +17,11 @@ REFRESH_TOKEN_EXPIRY = 2
 
 @auth_router.post(
         '/signup',
-        response_model=UserModel,
+        response_model=UserResponseModel,
         status_code=status.HTTP_201_CREATED
     )
 async def create_user_account(
-        user: UserCreateModel,
+        user: UserRequestModel,
         session: AsyncSession=Depends(get_session)
     ):
     email = user.email
@@ -83,7 +83,7 @@ async def get_new_access_token(
     raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = 'Invalid or expired token')
 
 
-@auth_router.get('/me')
+@auth_router.get('/me', response_model=UserModel)
 async def get_current_user(
         user = Depends(get_current_user),
         _: bool = Depends(role_checker)
